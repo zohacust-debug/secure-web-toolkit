@@ -216,3 +216,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+Update .gitignore - exclude __pycache__, uploads, private keys, logs, venvenv/
+.venv/
+
+# Uploads (temporary files)
+IS-UPDATED_PROJECT/project_root/project_root/backend/uploads/
+
+# RSA Keys (keep private!)
+IS-UPDATED_PROJECT/project_root/project_root/backend/keys/private.pem
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
