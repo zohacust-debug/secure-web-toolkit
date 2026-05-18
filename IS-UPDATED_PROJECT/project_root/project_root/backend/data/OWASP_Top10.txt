@@ -1,0 +1,18 @@
+# OWASP Top 10 Vulnerabilities
+
+The OWASP Top 10 is a standard awareness document for web application security risks.
+
+## Top 10 Risks
+1. Injection (SQL, NoSQL)
+2. Broken Authentication
+3. Sensitive Data Exposure
+4. XML External Entities (XXE)
+5. Broken Access Control
+6. Security Misconfiguration
+7. Cross-Site Scripting (XSS)
+8. Insecure Deserialization
+9. Using Components with Known Vulnerabilities
+10. Insufficient Logging & Monitoring
+
+## Example
+A web application preventing SQL injection by using prepared statements and input validation.

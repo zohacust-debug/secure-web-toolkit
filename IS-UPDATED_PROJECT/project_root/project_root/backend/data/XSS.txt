@@ -1,0 +1,18 @@
+# Cross-Site Scripting (XSS)
+
+XSS is a web security vulnerability where attackers inject malicious scripts into web pages.
+
+## Types
+1. Stored XSS: Script is permanently stored on the server.
+2. Reflected XSS: Script is reflected in a response from the server.
+3. DOM-based XSS: Script modifies the page via the DOM in the browser.
+
+## Risks
+- Session hijacking
+- Credential theft
+- Malware delivery
+
+## Protection
+- Validate and sanitize user inputs.
+- Use Content Security Policy (CSP).
+- Escape outputs in HTML/JS.

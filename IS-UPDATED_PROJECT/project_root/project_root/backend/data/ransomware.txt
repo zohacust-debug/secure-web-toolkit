@@ -1,0 +1,17 @@
+# Ransomware
+
+Ransomware is malware that encrypts victim's files and demands payment for decryption.
+
+## How It Works
+1. Delivered via phishing emails, malicious downloads, or vulnerabilities.
+2. Encrypts files on victim’s system.
+3. Displays ransom message demanding cryptocurrency payment.
+
+## Prevention
+- Regularly back up files offline.
+- Use antivirus and endpoint protection.
+- Keep software patched.
+- Educate employees about phishing.
+
+## Example
+The WannaCry ransomware spread rapidly in 2017, encrypting hundreds of thousands of systems worldwide.

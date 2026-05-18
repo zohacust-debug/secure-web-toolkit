@@ -1,0 +1,20 @@
+# Phishing Attacks
+
+Phishing is a social engineering attack where attackers trick victims into revealing sensitive information.
+
+## How It Works
+- Victim receives an email, message, or website that looks legitimate.
+- Attackers create urgency or fear to lure the victim.
+- Victim clicks a link or provides credentials.
+
+## Types
+- Spear Phishing: Targeted attacks on specific individuals.
+- Whaling: High-profile targets like executives.
+- Smishing: Phishing via SMS.
+- Pharming: Redirecting users to fake websites.
+
+## Protection Tips
+- Verify sender identity.
+- Avoid clicking suspicious links.
+- Use multi-factor authentication.
+- Keep software up to date.

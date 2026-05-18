@@ -1,0 +1,447 @@
+thrads creation:
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/wait.h>
+#include<stdlib.h>
+
+int main()
+{
+pid_t pid = fork();
+if(pid==0){
+printf("childid: %d, parent id %d\n",getpid(), getppid());
+exit(0);
+}
+if(pid>0)
+{
+wait(NULL);
+printf("parent id %d (child finished)\n" , getppid());
+}
+else
+{
+perror("process failed");
+}
+}
+
+
+file control:
+
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    char buffer[50];
+    char message[] = "Hello Asma, this is a system call example!";
+
+    // 1️⃣ Open (or create) file
+    fd = open("example.txt", O_RDWR | O_CREAT, 0644);
+    if (fd < 0) {
+        printf("Error opening file!\n");
+        return 1;
+    }
+
+    // 2️⃣ Write to file
+    write(fd, message, sizeof(message) - 1); // -1 to avoid writing null char
+    printf("Data written to file successfully.\n");
+
+    // 3️⃣ Move pointer to start
+    lseek(fd, 0, SEEK_SET);
+
+    // 4️⃣ Read from file
+    int bytesRead = read(fd, buffer, sizeof(buffer) - 1);
+    buffer[bytesRead] = '\0'; // ✅ Null terminate
+
+    printf("Data read from file: %s\n", buffer);
+
+    // 5️⃣ Close file
+    close(fd);
+    printf("File closed successfully.\n");
+    return 0;
+}
+
+
+FCFS:
+#include<stdio.h>
+int main()
+{
+int n;
+printf("enter no of process: ");
+scanf("%d",&n);
+int  at[n], bt[n];
+int tat[n], ct[n], wt[n];
+
+for (int i = 0; i < n; i++) {
+printf("Enter arrival time and burst time for process P%d: ", i + 1);
+    scanf("%d%d", &at[i], &bt[i]);
+}
+
+for (int i = 0; i < n - 1; i++) {
+for (int j = i + 1; j < n; j++) {
+if (at[i] > at[j]) {  
+int temp = at[i];
+ at[i] = at[j];
+ at[j] = temp;
+
+temp = bt[i];
+bt[i] = bt[j];
+bt[j] = temp;
+}
+}
+}
+
+int time =0;
+for(int i=0;i<n;i++){
+if(time <at[i])
+{
+time = at[i];
+}
+time = time +bt[i];
+ct[i]=time;
+tat[i] = ct[i]-at[i];
+wt[i] = tat[i]-bt[i];
+}
+printf("\n\n p\tAt \t BT \t CT \t TAT \t WT\n");
+for(int i =0;i<n;i++){
+printf("p%d\t%d\t%d\t%d\t%d\t%d\n", i+1,at[i], bt[i], ct[i], tat[i], wt[i]);
+}
+}
+
+
+SJF
+
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int AT[n], BT[n], CT[n], TAT[n], WT[n], done[n];
+
+    // Input
+    for (int i = 0; i < n; i++) {
+        printf("Enter Arrival Time and Burst Time for P%d: ", i + 1);
+        scanf("%d %d", &AT[i], &BT[i]);
+        done[i] = 0;  // process not completed yet
+    }
+
+    int completed = 0;
+    int currentTime = 0;
+    float total_TAT = 0, total_WT = 0;
+
+    // SJF main loop
+    while (completed < n) {
+
+        int idx = -1;         // index of selected process
+        int minBT = 999999;   // very large number
+
+        // Choose process with smallest BT among arrived processes
+        for (int i = 0; i < n; i++) {
+            if (AT[i] <= currentTime && done[i] == 0 && BT[i] < minBT) {
+                minBT = BT[i];
+                idx = i;
+            }
+        }
+
+        // If a process is found
+        if (idx != -1) {
+        
+            currentTime += BT[idx];        // update time
+            CT[idx] = currentTime;         // completion time
+            TAT[idx] = CT[idx] - AT[idx];  // turnaround time
+            WT[idx] = TAT[idx] - BT[idx];  // waiting time
+
+            done[idx] = 1;                 // mark completed
+            completed++;
+
+            total_TAT += TAT[idx];
+            total_WT += WT[idx];
+        }
+        else {
+            // No process arrived yet → CPU idle
+            currentTime++;
+        }
+    }
+
+    // Print result table
+    printf("\nP\tAT\tBT\tCT\tTAT\tWT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
+               i + 1, AT[i], BT[i], CT[i], TAT[i], WT[i]);
+    }
+
+    // Averages
+    int avgtat = total_TAT / n;
+    int avgwt = total_WT / n;
+    printf("\nAverage Turnaround Time %d\n" , avgtat);
+    printf("\nAverage Waiting Time   %d\n" , avgwt` );
+
+    return 0;
+}
+
+
+
+IPC(PARENT AND CHILD):
+#include<stdio.h>
+#include<unistd.h>
+#include<string.h>
+
+int main() {
+    int pid;
+    int fd[2];
+    char msg[100] = "hello, this is lab5";
+
+    if(pipe(fd) == -1) {
+        printf("Pipe failed\n");
+        return 1;
+    }
+
+    pid = fork();
+    if(pid < 0) {
+        printf("Fork failed\n");
+        return 1;
+    }
+
+    if(pid > 0) {  // parent process
+        printf("Parent process\n");
+        close(fd[0]);                  // close read end
+        write(fd[1], msg, strlen(msg) + 1); // +1 to include null terminator
+        close(fd[1]);
+    } else {       // child process
+        printf("Child process\n");
+        close(fd[1]);                  // close write end
+        read(fd[0], msg, sizeof(msg));
+        printf("msg: %s\n", msg);
+        close(fd[0]);
+    }
+
+    return 0;
+}
+
+
+
+
+. Simple Threading Example
+This just creates one thread and runs a small function in it.
+Code:
+#include <stdio.h>
+#include <pthread.h>   // for threads
+
+// Function that runs in the new thread
+void* myThread(void* arg) {
+    printf("Hello from the new thread!\n");
+    return NULL;
+}
+
+int main() {
+    pthread_t thread;   // thread variable
+
+    // Create a new thread
+    pthread_create(&thread, NULL, myThread, NULL);
+
+    // Wait for the thread to finish
+    pthread_join(thread, NULL);
+
+    printf("Hello from the main thread!\n");
+    return 0;
+}
+
+2. One-to-One Threading Model
+Each user thread is mapped to one kernel thread — this is how POSIX threads (pthreads) work.
+Code:
+#include <stdio.h>
+#include <pthread.h>
+
+void* printMessage(void* arg) {
+    char* message = (char*) arg;
+    printf("%s\n", message);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    pthread_create(&t1, NULL, printMessage, "Thread 1: Hello");
+    pthread_create(&t2, NULL, printMessage, "Thread 2: World");
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Main thread done!\n");
+    return 0;
+}
+
+3. Many-to-One Threading Model (Simulated)
+In this model, many user threads are mapped to one kernel thread.
+Linux pthreads doesn’t directly support this, so we simulate it using setjmp/longjmp.
+Code:
+#include <stdio.h>
+#include <setjmp.h>
+
+jmp_buf env[2];
+int current = 0;
+
+void thread_func(int id) {
+    for (int i = 0; i < 3; i++) {
+        printf("User thread %d: iteration %d\n", id, i + 1);
+        if (setjmp(env[id]) == 0) {
+            current = (current + 1) % 2;
+            longjmp(env[current], 1);
+        }
+    }
+}
+
+int main() {
+    for (int i = 0; i < 2; i++)
+        if (setjmp(env[i]) != 0)
+            thread_func(i);
+
+    thread_func(0);
+    return 0;
+}
+
+ 4. Many-to-Many Threading Model (Concept)
+In this model, multiple user threads are mapped to multiple kernel threads.
+We simulate it using pthread_create() but assume multiple kernel threads are used.
+Code:
+#include <stdio.h>
+#include <pthread.h>
+
+void* task(void* arg) {
+    int id = *(int*)arg;
+    printf("User thread %d is running.\n", id);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[3];
+    int ids[3] = {1, 2, 3};
+
+    for (int i = 0; i < 3; i++)
+        pthread_create(&threads[i], NULL, task, &ids[i]);
+
+    for (int i = 0; i < 3; i++)
+        pthread_join(threads[i], NULL);
+
+    printf("All threads completed.\n");
+    return 0;
+}
+Source code:
+#include<stdio.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<string.h>
+int main()
+{
+int pid;
+int fd[2];
+char msg[100] = "hello, this is lab5";
+
+if(pipe(fd)==-1)
+{
+
+return 1;
+}
+pid =fork();
+if(pid<0)
+{
+printf("error in process");
+}
+int arr[] = {1,2,3,4,5};
+int n = sizeof(arr) / sizeof(arr[0]);
+//parentprocess
+if (pid > 0)
+{
+printf("parent process");
+close(fd[0]);
+
+printf("\nParent process sending array: ");
+for (int i = 0; i < n; i++)
+{
+printf("%d ", arr[i]);
+}
+write(fd[1],arr,sizeof(arr));
+close(fd[1]);
+}
+//childprocess
+else
+{
+printf("\nchild process");
+close(fd[1]);
+int arr1[5];  
+read(fd[0], arr1, sizeof(arr1));
+close(fd[0]);
+int sum = 0;
+for (int i = 0; i < n; i++) 
+{
+sum += arr[i];
+}
+printf("\nChild received array: ");
+for (int i = 0; i < n; i++) {
+printf("%d ", arr[i]);
+}
+printf("\nSum of array elements = %d\n", sum);
+}
+
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<string.h>
+int main()
+{
+int pid;
+int fd[2];
+char msg[100] = "hello, this is lab5";
+
+if(pipe(fd)==-1)
+{
+
+return 1;
+}
+pid =fork();
+if(pid<0)
+{
+printf("error in process");
+}
+int arr[] = {1,2,3,4,5};
+int n = sizeof(arr) / sizeof(arr[0]);
+//parentprocess
+if (pid > 0)
+{
+printf("parent process");
+close(fd[0]);
+
+printf("\nParent process sending array: ");
+for (int i = 0; i < n; i++)
+{
+printf("%d ", arr[i]);
+}
+write(fd[1],arr,sizeof(arr));
+close(fd[1]);
+}
+//childprocess
+else
+{
+printf("\nchild process");
+close(fd[1]);
+int arr1[5];  
+read(fd[0], arr1, sizeof(arr1));
+close(fd[0]);
+int sum = 0;
+for (int i = 0; i < n; i++) 
+{
+sum += arr[i];
+}
+printf("\nChild received array: ");
+for (int i = 0; i < n; i++) {
+printf("%d ", arr[i]);
+}
+printf("\nSum of array elements = %d\n", sum);
+}
+}

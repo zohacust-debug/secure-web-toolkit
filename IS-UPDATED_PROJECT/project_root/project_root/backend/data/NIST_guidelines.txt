@@ -1,0 +1,18 @@
+# NIST Cybersecurity Guidelines
+
+The National Institute of Standards and Technology (NIST) provides a framework for managing cybersecurity risk. It includes best practices for organizations to protect their information systems.
+
+## Core Functions
+1. Identify: Understand the assets, data, and risks.
+2. Protect: Implement safeguards like access controls and encryption.
+3. Detect: Monitor for cybersecurity events.
+4. Respond: Take action against detected incidents.
+5. Recover: Restore operations after an attack.
+
+## Benefits
+- Standardized approach to cybersecurity.
+- Helps organizations comply with regulations.
+- Reduces risk of data breaches.
+
+## Example
+An organization follows NIST guidelines by performing risk assessments, deploying firewalls, and regularly training employees.
